@@ -67,7 +67,6 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 //      [ { uint256: BigNumber { _hex: '0x265aa6' } },
 //        { uint256: BigNumber { _hex: '0x0615ec20' } } ] 
 // }
-
 ```
 
 
@@ -81,7 +80,7 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 
 ### Contributing
 
-
+- Issues & PR's are welcome.
 
 ### Licence
 
