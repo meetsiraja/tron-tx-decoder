@@ -80,7 +80,7 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 
 ### Contributing
 
-- Issues & PR's are welcome.
+- Issues & Pull requests are welcome! Fork, branch, and submit PR.
 
 ### Licence
 
