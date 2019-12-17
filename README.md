@@ -1,12 +1,12 @@
 <p align="center">
-<img src="https://tron.network/static/images/logo.png" width=200 />
+<img src="https://tron.network/static/images/logo.png" width=400 />
 </p>
 
 ## tron-tx-decoder
 
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/meetsiraja/tron-tx-decoder)
 
-Lightweight utility for decoding function parameters  and function output from Tron blocklchain transactions.
+Lightweight utility for decoding function parameters and function output from Tron blocklchain transactions.
 
 - Minimal dependencies.
 
@@ -73,13 +73,17 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 
 
 
-#### BigNumber
+### BigNumber
 
 - BigNumber can be converted to number using  ***prototype*** .toNumber(). Which return a JavaScript number of the value.
 
-[BigNumber Documentation (ethers.js)](https://docs.ethers.io/ethers.js/html/api-utils.html#big-numbers)
+- [BigNumber Documentation (ethers.js)](https://docs.ethers.io/ethers.js/html/api-utils.html#big-numbers)
 
-#### Licence
+### Contributing
+
+
+
+### Licence
 
 [MIT](https://github.com/meetsiraja/tron-tx-decoder/LICENCE.md)
 

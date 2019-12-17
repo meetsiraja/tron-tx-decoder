@@ -1,13 +1,43 @@
 {
-  "name": "tx-decoder",
+  "name": "tron-tx-decoder",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Lightweight utility for decoding function parameters and function output from Tron blocklchain transactions.",
+  "license": "MIT",
+  "keywords": [
+    "tron",
+    "transaction",
+    "smart",
+    "contract",
+    "abi",
+    "function",
+    "functions",
+    "parameters",
+    "params",
+    "event",
+    "events",
+    "decoder",
+    "decode",
+    "RLP",
+    "parse",
+    "parser",
+    "ethers",
+    "ethers.js",
+    "trx",
+    "raw",
+    "tx"],  
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/meetsiraja/tron-tx-decoder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/meetsiraja/tron-tx-decoder/issues"
+  },
+  "homepage": "https://github.com/meetsiraja/tron-tx-decoder",
+  "author": "https://github.com/meetsiraja",
+  "main": "decoder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
     "ethers": "^4.0.40"
