@@ -34,8 +34,8 @@ const decoder = new TronTxDecoder({ mainnet: true });
 // { mainnet: false } for testnet
 ```
 
-#### Decode Input:
-Decode funciton input parameters by passing transaction id.
+### Decode Input:
+Decode function input parameters by passing transaction id.
 ```js
 async function decodeTxInput(txId){
     const decodedInput = await decoder.decodeInputById(txId);
@@ -44,7 +44,7 @@ async function decodeTxInput(txId){
 
 decodeTxInput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08");
 ```
-##### Output:
+#### Output:
 ```js
 { 
     methodName: 'submitTheGame',
@@ -60,8 +60,8 @@ decodeTxInput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08"
 }
 ```
 
-#### Decode Output:
-Decode funciton outputs by passing transaction id.
+### Decode Output:
+Decode function outputs by passing transaction id.
 
 ```js
 async function decodeTxOutput(txId){
@@ -71,7 +71,7 @@ async function decodeTxOutput(txId){
 
 decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08");
 ```
-##### Output:
+#### Output:
 ```js
 { 
     methodName: 'submitTheGame',
