@@ -42,15 +42,22 @@ async function decodeTxInput(txId){
     return decodedInput;
 }
 
-decodeTxInput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08").then(console.log);
-// { 
-//    methodName: 'submitTheGame',
-//    decodedInput: 
-//     [ { '_betId (uint256)': BigNumber { _hex: '0x265aa6' } },
-//       { 'freshHouseSeed (address)': '0x8F476d1155E9910A885Cae1c4396BDD392c3883E' },
-//       { 'rollResult (uint8)': 11 },
-//       { '_gameOutcome (uint8)': 1 } ] 
-// }
+decodeTxInput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08");
+```
+##### Output:
+```js
+{ 
+    methodName: 'submitTheGame',
+    inputNames: [ '_betId', 'freshHouseSeed', 'rollResult', '_gameOutcome' ],
+    inputTypes: [ 'uint256', 'address', 'uint8', 'uint8' ],
+    decodedInput: { 
+        '0': BigNumber { _hex: '0x265aa6' },
+        '1': '0x8F476d1155E9910A885Cae1c4396BDD392c3883E',
+        '2': 11,
+        '3': 1,
+        _length: 4 
+    } 
+}
 ```
 
 #### Decode Output:
@@ -62,17 +69,21 @@ async function decodeTxOutput(txId){
     return decodedOutput;
 }
 
-decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08").then(console.log);
-// { 
-//    methodName: 'submitTheGame',
-//    decodedOutput: 
-//      [ { uint256: BigNumber { _hex: '0x265aa6' } },
-//        { uint256: BigNumber { _hex: '0x0615ec20' } } ] 
-// }
+decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08");
 ```
-
-
-
+##### Output:
+```js
+{ 
+    methodName: 'submitTheGame',
+    outputNames: [ null, null ],
+    outputTypes: [ 'uint256', 'uint256' ],
+    decodedOutput: { 
+        '0': BigNumber { _hex: '0x265aa6' },
+        '1': BigNumber { _hex: '0x0615ec20' },
+        _length: 2 
+    }
+}
+```
 
 ### BigNumber
 
@@ -83,6 +94,10 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 ## Contributing
 
 - Issues & Pull requests are welcome! Fork, branch, and submit PR.
+
+## Changelog
+
+- [Changelog](https://github.com/meetsiraja/tron-tx-decoder/blob/master/CHANGELOG.md)
 
 ## Licence
 

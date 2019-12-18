@@ -43,12 +43,15 @@ class TronTxDecoder {
             if(!functionABI.outputs)
                 return {
                     methodName: resultInput.method,
+                    outputNames: {},
+                    outputTypes: {},
                     decodedOutput: {}
                 };
             let outputType = functionABI.outputs;
             const types = outputType.map(({type}) => type);
             const names = resultInput.namesOutput;
-            
+            names.forEach(function(n,l){this[l]||(this[l]=null);},names);
+
             var encodedResult = await _getHexEncodedResult(transactionID, this.tronNode);
             if(!encodedResult.includes('0x')){
                 let resMessage = "";
@@ -60,23 +63,24 @@ class TronTxDecoder {
 
                 return {
                     methodName: resultInput.method,
+                    outputNames: names,
+                    outputTypes: types,
                     decodedOutput: resMessage
                 };
                 
             }
            
             var outputs = utils.defaultAbiCoder.decode(types, encodedResult);
-            let outputArray = new Array()
+            let outputObject = {_length: types.length}
             for(var i=0; i<types.length; i++){
-                let name, outputObject = {};
-                name = void 0 !== names[i] ? names[i]+" ("+types[i]+")" : types[i];
                 let output = outputs[i]
-                outputObject[name] = output;
-                outputArray.push(outputObject)
+                outputObject[i] = output;
             }
             return {
                 methodName: resultInput.method,
-                decodedOutput: outputArray
+                outputNames: names,
+                outputTypes: types,
+                decodedOutput: outputObject
             };
 
         }catch(err){
@@ -106,18 +110,16 @@ class TronTxDecoder {
             var names = resultInput.namesInput;
             var inputs = resultInput.inputs;
             var types = resultInput.typesInput;
-            let inputArray = new Array();
-            
+            let inputObject = {_length: names.length};
             for(var i=0; i<names.length; i++){
-                let inputObject = {};
-                let name = names[i] + ' (' + types[i]+ ')';
                 let input = inputs[i]
-                inputObject[name] = input;
-                inputArray.push(inputObject);
+                inputObject[i] = input;
             }
             return {
                 methodName: resultInput.method,
-                decodedInput: inputArray
+                inputNames: names,
+                inputTypes: types,
+                decodedInput: inputObject
             };
 
         }catch(err){
@@ -142,9 +144,7 @@ async function _getHexEncodedResult(transactionID, tronNode){
         const transaction = await axios.post(`${tronNode}/wallet/gettransactioninfobyid`, { value: transactionID});
         if (!Object.keys(transaction.data).length)
             throw 'Transaction not found';
-        if(transaction.data.contractResult[0] == '')
-            return transaction.data.resMessage;
-        return '0x'+transaction.data.contractResult[0]
+        return "" == transaction.data.contractResult[0] ? transaction.data.resMessage : "0x"+transaction.data.contractResult[0];
     }catch(error){
         throw error;
     }    
