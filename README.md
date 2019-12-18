@@ -10,6 +10,8 @@ Lightweight utility for decoding function parameters and function output from Tr
 
 - Minimal dependencies.
 
+- Decode method name used by specific Transaction Id.
+
 - Find the input parameter passed to function by Transaction Id.
 
 - Find the exact output returned from the function by Transaction Id.
@@ -78,11 +80,11 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 
 - [BigNumber Documentation (ethers.js)](https://docs.ethers.io/ethers.js/html/api-utils.html#big-numbers)
 
-### Contributing
+## Contributing
 
 - Issues & Pull requests are welcome! Fork, branch, and submit PR.
 
-### Licence
+## Licence
 
-[MIT](https://github.com/meetsiraja/tron-tx-decoder/LICENCE.md)
+[MIT](https://github.com/meetsiraja/tron-tx-decoder/blob/master/LICENCE.md)
 

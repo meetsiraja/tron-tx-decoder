@@ -1,6 +1,6 @@
 {
   "name": "tron-tx-decoder",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Lightweight utility for decoding function parameters and function output from Tron blocklchain transactions.",
   "license": "MIT",
   "keywords": [
