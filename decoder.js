@@ -45,7 +45,7 @@ class TronTxDecoder {
                     methodName: resultInput.method,
                     outputNames: {},
                     outputTypes: {},
-                    decodedOutput: {}
+                    decodedOutput: { _length: 0}
                 };
             let outputType = functionABI.outputs;
             const types = outputType.map(({type}) => type);
