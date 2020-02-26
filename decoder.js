@@ -126,6 +126,46 @@ class TronTxDecoder {
             throw new Error(err)
         }
     }
+
+    /**
+     * Decode revert message from the transaction hash (if any)
+     *
+     * @method decodeRevertMessage
+     * @param {string} transactionID the transaction hash
+     * @return {Object} decoded result with method name
+     */
+    async decodeRevertMessage(transactionID){
+
+        try{
+
+            let transaction = await _getTransaction(transactionID, this.tronNode);
+            let contractAddress = transaction.raw_data.contract[0].parameter.value.contract_address;
+            if(contractAddress === undefined)
+                throw 'No Contract found for this transaction hash.';
+            
+            let txStatus = transaction.ret[0].contractRet;
+            if(txStatus == 'REVERT'){
+                let encodedResult = await _getHexEncodedResult(transactionID, this.tronNode)
+                encodedResult = encodedResult.substring(encodedResult.length - 64, encodedResult.length);
+                console.log(encodedResult)
+                let resMessage = (Buffer.from(encodedResult, 'hex').toString('utf8')).replace(/\0/g, '');
+
+                return {
+                    txStatus: txStatus,
+                    revertMessage: resMessage.replace(/\0/g, '')
+                };
+
+            } else {
+                return {
+                    txStatus: txStatus,
+                    revertMessage: ''
+                };
+            }
+            
+        }catch(err){
+            throw new Error(err)
+        }
+    }
 }
 
 async function _getTransaction(transactionID, tronNode){

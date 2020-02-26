@@ -87,6 +87,25 @@ decodeTxOutput("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08
 }
 ```
 
+### Decode Revert Message (if any):
+Decode function outputs by passing transaction id.
+
+```js
+async function decodeRevertMessage(txId){
+    const decodedMessage = await decoder.decodeRevertMessage(txId);
+    return decodedMessage;
+}
+
+decodeRevertMessage("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08");
+```
+#### Output:
+```js
+{ 
+    txStatus: 'REVERT',
+    revertMessage: 'Plot is not currently owned' 
+}
+```
+
 ### BigNumber
 
 - BigNumber can be converted to number using  ***prototype*** .toNumber(). Which return a JavaScript number of the value.

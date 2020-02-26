@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Released]
 
+## [2.0.0] - 2020-02-26
+
+### Added
+
+- Added Function to decode revert message from smart contract by TransactionId.
+- Updated `README.md` as per the new changes.
+
 ## [1.1.0] - 2019-12-18
 
 ### Changed
