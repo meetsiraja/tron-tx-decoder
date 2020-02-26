@@ -147,7 +147,6 @@ class TronTxDecoder {
             if(txStatus == 'REVERT'){
                 let encodedResult = await _getHexEncodedResult(transactionID, this.tronNode)
                 encodedResult = encodedResult.substring(encodedResult.length - 64, encodedResult.length);
-                console.log(encodedResult)
                 let resMessage = (Buffer.from(encodedResult, 'hex').toString('utf8')).replace(/\0/g, '');
 
                 return {
