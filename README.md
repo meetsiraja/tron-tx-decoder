@@ -96,7 +96,7 @@ async function decodeRevertMessage(txId){
     return decodedMessage;
 }
 
-decodeRevertMessage("0c739761b34a891b3bbecd528302de827736660d76c62dacf8d3a9ebe7dade08");
+decodeRevertMessage("5d6db71f3316a2abdf7f08f97cd42880209ee7344816d404ce865a8679bdb7ae");
 ```
 #### Output:
 ```js
