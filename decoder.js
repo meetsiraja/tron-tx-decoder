@@ -120,8 +120,7 @@ class TronTxDecoder {
             };
 
         } catch (err) {
-            //throw new Error(err)
-            console.log(err)
+            throw new Error(err)
         }
     }
 
