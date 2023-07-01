@@ -3,6 +3,7 @@ const { utils } = require('ethers')
 
 const MAINNET_NODE = 'https://api.trongrid.io';
 const TESTNET_NODE = 'https://api.shasta.trongrid.io'
+const ABI_GENERIC = '[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"who","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]'
 
 class TronTxDecoder {
 
@@ -15,7 +16,7 @@ class TronTxDecoder {
      * @return {TronTxDecoder} a TronWeb object
      *
      */
-    constructor ({ mainnet }) {
+    constructor({ mainnet }) {
         mainnet ? this.tronNode = MAINNET_NODE : this.tronNode = TESTNET_NODE;
         // (this.tronWeb, this.tronNode) = initTronWeb(mainnet);
     }
@@ -27,20 +28,20 @@ class TronTxDecoder {
      * @param {string} transactionID the transaction hash
      * @return {Object} decoded result with method name
      */
-    async decodeResultById(transactionID){
+    async decodeResultById(transactionID) {
 
-        try{
+        try {
             let transaction = await _getTransaction(transactionID, this.tronNode);
-            let data = '0x'+transaction.raw_data.contract[0].parameter.value.data;
+            let data = '0x' + transaction.raw_data.contract[0].parameter.value.data;
             let contractAddress = transaction.raw_data.contract[0].parameter.value.contract_address;
-            if(contractAddress === undefined)
+            if (contractAddress === undefined)
                 throw 'No Contract found for this transaction hash.';
             let abi = await _getContractABI(contractAddress, this.tronNode);
 
             const resultInput = _extractInfoFromABI(data, abi);
             let functionABI = abi.find(i => i.name === resultInput.method);
 
-            if(!functionABI.outputs)
+            if (!functionABI.outputs)
                 return {
                     methodName: resultInput.method,
                     outputNames: {},
@@ -48,12 +49,12 @@ class TronTxDecoder {
                     decodedOutput: { _length: 0 }
                 };
             let outputType = functionABI.outputs;
-            const types = outputType.map(({type}) => type);
+            const types = outputType.map(({ type }) => type);
             const names = resultInput.namesOutput;
-            names.forEach(function(n,l){this[l]||(this[l]=null);},names);
+            names.forEach(function (n, l) { this[l] || (this[l] = null); }, names);
 
             var encodedResult = await _getHexEncodedResult(transactionID, this.tronNode);
-            if(!encodedResult.includes('0x')){
+            if (!encodedResult.includes('0x')) {
                 let resMessage = "";
                 let i = 0, l = encodedResult.length;
                 for (; i < l; i += 2) {
@@ -67,12 +68,12 @@ class TronTxDecoder {
                     outputTypes: types,
                     decodedOutput: resMessage
                 };
-                
+
             }
-           
+
             var outputs = utils.defaultAbiCoder.decode(types, encodedResult);
-            let outputObject = {_length: types.length}
-            for(var i=0; i<types.length; i++){
+            let outputObject = { _length: types.length }
+            for (var i = 0; i < types.length; i++) {
                 let output = outputs[i]
                 outputObject[i] = output;
             }
@@ -83,35 +84,31 @@ class TronTxDecoder {
                 decodedOutput: outputObject
             };
 
-        }catch(err){
+        } catch (err) {
             throw new Error(err)
         }
     }
 
     /**
-     * Decode result data from the transaction hash
-     *
-     * @method decodeResultById
-     * @param {string} transactionID the transaction hash
-     * @return {Object} decoded result with method name
-     */
-    async decodeInputById(transactionID){
-
-        try{
-
-            let transaction = await _getTransaction(transactionID, this.tronNode);
-            let data = '0x'+transaction.raw_data.contract[0].parameter.value.data;
+    * Decode result data from the transaction hash
+    *
+    * @method decodeInputByTx
+    * @param {Object} transaction the transaction hash
+    * @return {Object} decoded result with method name
+    */
+    async decodeInputByTx(transaction) {
+        try {
+            let data = '0x' + transaction.raw_data.contract[0].parameter.value.data;
             let contractAddress = transaction.raw_data.contract[0].parameter.value.contract_address;
-            if(contractAddress === undefined)
+            if (contractAddress === undefined)
                 throw 'No Contract found for this transaction hash.';
-            let abi = await _getContractABI(contractAddress, this.tronNode);
-
-            const resultInput = _extractInfoFromABI(data, abi);
+            
+            const resultInput = _extractInfoFromABI(data, JSON.parse(ABI_GENERIC));
             var names = resultInput.namesInput;
             var inputs = resultInput.inputs;
             var types = resultInput.typesInput;
-            let inputObject = {_length: names.length};
-            for(var i=0; i<names.length; i++){
+            let inputObject = { _length: names.length };
+            for (var i = 0; i < names.length; i++) {
                 let input = inputs[i]
                 inputObject[i] = input;
             }
@@ -122,7 +119,47 @@ class TronTxDecoder {
                 decodedInput: inputObject
             };
 
-        }catch(err){
+        } catch (err) {
+            //throw new Error(err)
+            console.log(err)
+        }
+    }
+
+    /**
+     * Decode result data from the transaction hash
+     *
+     * @method decodeInputById
+     * @param {string} transactionID the transaction hash
+     * @return {Object} decoded result with method name
+     */
+    async decodeInputById(transactionID) {
+
+        try {
+
+            let transaction = await _getTransaction(transactionID, this.tronNode);
+            let data = '0x' + transaction.raw_data.contract[0].parameter.value.data;
+            let contractAddress = transaction.raw_data.contract[0].parameter.value.contract_address;
+            if (contractAddress === undefined)
+                throw 'No Contract found for this transaction hash.';
+            let abi = await _getContractABI(contractAddress, this.tronNode);
+
+            const resultInput = _extractInfoFromABI(data, abi);
+            var names = resultInput.namesInput;
+            var inputs = resultInput.inputs;
+            var types = resultInput.typesInput;
+            let inputObject = { _length: names.length };
+            for (var i = 0; i < names.length; i++) {
+                let input = inputs[i]
+                inputObject[i] = input;
+            }
+            return {
+                methodName: resultInput.method,
+                inputNames: names,
+                inputTypes: types,
+                decodedInput: inputObject
+            };
+
+        } catch (err) {
             throw new Error(err)
         }
     }
@@ -134,17 +171,17 @@ class TronTxDecoder {
      * @param {string} transactionID the transaction hash
      * @return {Object} decoded result with method name
      */
-    async decodeRevertMessage(transactionID){
+    async decodeRevertMessage(transactionID) {
 
-        try{
+        try {
 
             let transaction = await _getTransaction(transactionID, this.tronNode);
             let contractAddress = transaction.raw_data.contract[0].parameter.value.contract_address;
-            if(contractAddress === undefined)
+            if (contractAddress === undefined)
                 throw 'No Contract found for this transaction hash.';
-            
+
             let txStatus = transaction.ret[0].contractRet;
-            if(txStatus == 'REVERT'){
+            if (txStatus == 'REVERT') {
                 let encodedResult = await _getHexEncodedResult(transactionID, this.tronNode)
                 encodedResult = encodedResult.substring(encodedResult.length - 64, encodedResult.length);
                 let resMessage = (Buffer.from(encodedResult, 'hex').toString('utf8')).replace(/\0/g, '');
@@ -160,64 +197,64 @@ class TronTxDecoder {
                     revertMessage: ''
                 };
             }
-            
-        }catch(err){
+
+        } catch (err) {
             throw new Error(err)
         }
     }
 }
 
-async function _getTransaction(transactionID, tronNode){
-    try{
-        const transaction = await axios.post(`${tronNode}/wallet/gettransactionbyid`, { value: transactionID});
+async function _getTransaction(transactionID, tronNode) {
+    try {
+        const transaction = await axios.post(`${tronNode}/wallet/gettransactionbyid`, { value: transactionID });
         if (!Object.keys(transaction.data).length)
             throw 'Transaction not found';
         return transaction.data
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _getHexEncodedResult(transactionID, tronNode){
-    try{
-        const transaction = await axios.post(`${tronNode}/wallet/gettransactioninfobyid`, { value: transactionID});
+async function _getHexEncodedResult(transactionID, tronNode) {
+    try {
+        const transaction = await axios.post(`${tronNode}/wallet/gettransactioninfobyid`, { value: transactionID });
         if (!Object.keys(transaction.data).length)
             throw 'Transaction not found';
-        return "" == transaction.data.contractResult[0] ? transaction.data.resMessage : "0x"+transaction.data.contractResult[0];
-    }catch(error){
+        return "" == transaction.data.contractResult[0] ? transaction.data.resMessage : "0x" + transaction.data.contractResult[0];
+    } catch (error) {
         throw error;
-    }    
+    }
 }
 
 
-async function _getContractABI(contractAddress, tronNode){
-    try{
-        const contract = await axios.post(`${tronNode}/wallet/getcontract`, { value: contractAddress});
+async function _getContractABI(contractAddress, tronNode) {
+    try {
+        const contract = await axios.post(`${tronNode}/wallet/getcontract`, { value: contractAddress });
         if (contract.Error)
             throw 'Contract does not exist';
         return contract.data.abi.entrys;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-function _genMethodId (methodName, types) {
+function _genMethodId(methodName, types) {
     const input = methodName + '(' + (types.reduce((acc, x) => {
-      acc.push(_handleInputs(x))
-      return acc
+        acc.push(_handleInputs(x))
+        return acc
     }, []).join(',')) + ')'
-  
+
     return utils.keccak256(Buffer.from(input)).slice(2, 10)
 }
 
-function _extractInfoFromABI(data, abi){
+function _extractInfoFromABI(data, abi) {
 
     const dataBuf = Buffer.from(data.replace(/^0x/, ''), 'hex');
 
     const methodId = Array.from(dataBuf.subarray(0, 4), function (byte) {
         return ('0' + (byte & 0xFF).toString(16)).slice(-2);
     }).join('');
-    
+
     var inputsBuf = dataBuf.subarray(4);
 
     return abi.reduce((acc, obj) => {
@@ -225,26 +262,26 @@ function _extractInfoFromABI(data, abi){
         if (obj.type === 'event') return acc
         const method = obj.name || null
         let typesInput = obj.inputs ? obj.inputs.map(x => {
-          if (x.type === 'tuple[]') {
-            return x
-          } else {
-            return x.type
-          }
+            if (x.type === 'tuple[]') {
+                return x
+            } else {
+                return x.type
+            }
         }) : [];
 
         let typesOutput = obj.outputs ? obj.outputs.map(x => {
             if (x.type === 'tuple[]') {
-              return x
+                return x
             } else {
-              return x.type
+                return x.type
             }
-          }) : []
+        }) : []
 
         let namesInput = obj.inputs ? obj.inputs.map(x => {
             if (x.type === 'tuple[]') {
-              return ''
+                return ''
             } else {
-              return x.name
+                return x.name
             }
         }) : [];
 
@@ -258,23 +295,23 @@ function _extractInfoFromABI(data, abi){
         const hash = _genMethodId(method, typesInput)
         if (hash === methodId) {
             let inputs = []
-            
+
             inputs = utils.defaultAbiCoder.decode(typesInput, inputsBuf);
 
             return {
-              method,
-              typesInput,
-              inputs,
-              namesInput,
-              typesOutput,
-              namesOutput
+                method,
+                typesInput,
+                inputs,
+                namesInput,
+                typesOutput,
+                namesOutput
             }
         }
         return acc;
-    }, { method: null, typesInput: [], inputs: [], namesInput: [], typesOutput:[], namesOutput:[] });
+    }, { method: null, typesInput: [], inputs: [], namesInput: [], typesOutput: [], namesOutput: [] });
 }
 
-function _handleInputs (input) {
+function _handleInputs(input) {
     let tupleArray = false
     if (input instanceof Object && input.components) {
         input = input.components
@@ -283,7 +320,7 @@ function _handleInputs (input) {
 
     if (!Array.isArray(input)) {
         if (input instanceof Object && input.type) {
-        return input.type
+            return input.type
         }
 
         return input
@@ -291,11 +328,11 @@ function _handleInputs (input) {
 
     let ret = '(' + input.reduce((acc, x) => {
         if (x.type === 'tuple') {
-        acc.push(handleInputs(x.components))
+            acc.push(handleInputs(x.components))
         } else if (x.type === 'tuple[]') {
-        acc.push(handleInputs(x.components) + '[]')
+            acc.push(handleInputs(x.components) + '[]')
         } else {
-        acc.push(x.type)
+            acc.push(x.type)
         }
         return acc
     }, []).join(',') + ')'
