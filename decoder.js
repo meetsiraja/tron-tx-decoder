@@ -291,9 +291,9 @@ function _handleInputs (input) {
 
     let ret = '(' + input.reduce((acc, x) => {
         if (x.type === 'tuple') {
-        acc.push(handleInputs(x.components))
+        acc.push(_handleInputs(x.components))
         } else if (x.type === 'tuple[]') {
-        acc.push(handleInputs(x.components) + '[]')
+        acc.push(_handleInputs(x.components) + '[]')
         } else {
         acc.push(x.type)
         }
